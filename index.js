@@ -1,21 +1,32 @@
-import express from "express"
-const app = express()
-app.use(express.json())
+import express from "express";
+import mongoose from "mongoose";
+import key from "./config/key.js";
 
-const PORT = 3000
+const app = express();
+app.use(express.json());
 
-const users = []
+const PORT = 3000;
 
-app.get('/users', (request, response) => {
-   return response.json(users)
-})
+const users = [];
 
-app.post('/user', (request, response) => {
-    const {name, email, telephone, address} = request.body
+app.get("/users", (request, response) => {
+  return response.json(users);
+});
 
-    users.push({name, email, telephone, address})
+app.post("/user", (request, response) => {
+  const { name, email, telephone, address } = request.body;
 
-    return response.status(201).json({name, email, telephone, address})
-})
+  users.push({ name, email, telephone, address });
 
-app.listen(PORT)
+  return response.status(201).json({ name, email, telephone, address });
+});
+
+// conectando com o banco de dados
+mongoose
+  .connect(
+    `mongodb+srv://wcarlos:${key}@cluster0.hpvl0ou.mongodb.net/?retryWrites=true&w=majority`
+  )
+  .then(() => console.log("🚀 connected database"))
+  .catch(() => console.log("connection fail"));
+
+app.listen(PORT);
