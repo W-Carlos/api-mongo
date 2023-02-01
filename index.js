@@ -1,5 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
+
+import User from "./models/User.js";
+
 import key from "./config/key.js";
 
 const app = express();
@@ -7,18 +10,19 @@ app.use(express.json());
 
 const PORT = 3000;
 
-const users = [];
 
-app.get("/users", (request, response) => {
-  return response.json(users);
+app.get("/users", async (request, response) => {
+  const users = await User.find()
+  
+  return response.status(200).json(users);
 });
 
-app.post("/user", (request, response) => {
-  const { name, email, telephone, address } = request.body;
+app.post("/user", async (request, response) => {
+  const user = request.body;
 
-  users.push({ name, email, telephone, address });
+  const newUser = await User.create(user)
 
-  return response.status(201).json({ name, email, telephone, address });
+  return response.status(201).json(newUser);
 });
 
 // conectando com o banco de dados
